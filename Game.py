@@ -1,5 +1,6 @@
 import random
 import pygame
+import os
 from pygame.constants import QUIT, K_DOWN, K_UP, K_LEFT, K_RIGHT
 
 pygame.init()
@@ -20,19 +21,27 @@ bg_y1 = 0
 bg_y2 = bg.get_height()
 bg_move = 5
 
-player_size = (40, 75)
-player = pygame.image.load('images\Player.png').convert_alpha()
+player_size = (50, 100)
+player = pygame.transform.scale(pygame.image.load('images\Player_Cars\BMW.png'), player_size)
 player_rect = pygame.Rect(WIDTH//2, HEIGHT*0.6, *player_size)
+player_rect.center = (WIDTH//2, HEIGHT*0.6)
 
 player_move_left = [-5, 0]
 player_move_right = [5, 0]
 
+ENEMIES_CARS_PATH = 'images\Traffic\Cars\\'
+ENEMIES_BIKES_PATH = 'images\Traffic\Bikes\\'
+ENEMIES_CARS_IMAGES = os.listdir(ENEMIES_CARS_PATH)
+ENEMIES_BIKES_IMAGES = os.listdir(ENEMIES_BIKES_PATH)
+ENEMIES = [[ENEMIES_CARS_PATH+img, (45, 90)] for img in ENEMIES_CARS_IMAGES]
+for img in ENEMIES_BIKES_IMAGES:
+    ENEMIES.append([ENEMIES_BIKES_PATH+img, (25, 55)])
 
 def create_enemy():
     global enemy_size
-    enemy_size = (42, 80)
-    enemy = pygame.transform.scale(pygame.image.load('images\Enemy.png'), enemy_size)
-    enemy = pygame.transform.rotate(enemy, 180)
+    enemy_choice = random.choice(ENEMIES)
+    enemy_size = enemy_choice[1]
+    enemy = pygame.transform.scale(pygame.image.load(enemy_choice[0]), enemy_size)
     lane = random.choice([1, 3, 5, 7])
     enemy_rect = pygame.Rect(LANE_WIDTH*lane, 0 - enemy_size[1], *enemy_size)
     enemy_rect.center = (LANE_WIDTH*lane, 0 - enemy_size[1])
