@@ -6,7 +6,7 @@ class Background:
         self.img = pygame.transform.scale(pygame.image.load(image), (width, height))
         self.bg_y1 = 0
         self.bg_y2 = self.img.get_height()
-        self.speed = 2
+        self.speed = 2.0
     
     def move(self):
         self.bg_y1 += self.speed

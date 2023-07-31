@@ -43,6 +43,8 @@ def event_parser(playing):
         if event.type == CREATE_ENEMY:
             new_enemy = Enemy(rand_enemy=random.choice(ENEMIES), lane=random.choice([1, 3, 5, 7]), lane_width=LANE_WIDTH)
             enemies.append(new_enemy)
+            rand_time_to_spawn = random.randint(200, 5000)
+            pygame.time.set_timer(CREATE_ENEMY, rand_time_to_spawn)
 
     return playing
 
@@ -50,10 +52,16 @@ def pressed_keys_parser():
     keys = pygame.key.get_pressed()
 
     if keys[K_UP]:
-        background.speed += 0.01
+        if background.speed < 10:
+            background.speed += 0.01
 
-    if keys[K_DOWN]:
-        background.speed -= 0.03
+    elif keys[K_DOWN]:
+        if background.speed > 1.5:
+            background.speed -= 0.03
+    
+    else:
+        if background.speed > 1.5:
+            background.speed -= 0.002
 
     if keys[K_RIGHT] and player.rect.right < WIDTH:
         player.rect = player.rect.move(player.move_right)
@@ -63,12 +71,17 @@ def pressed_keys_parser():
 
 def enemies_func(playing):
     for enemy in enemies:
-        enemy_speed = background.speed - 2
+        enemy_speed = background.speed - 2.0
         enemy.rect.move_ip(0, enemy_speed)
         main_display.blit(enemy.img, enemy.rect)
 
         if player.rect.colliderect(enemy.rect):
             playing = False
+        
+        for some_enemy in enemies:
+            if enemy is not some_enemy:
+                if enemy.rect.colliderect(some_enemy):
+                    enemies.pop(enemies.index(enemy))
 
         for enemy in enemies:
             if enemy.rect.top > HEIGHT:
