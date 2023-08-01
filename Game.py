@@ -26,6 +26,8 @@ CREATE_ENEMY = pygame.USEREVENT + 1
 pygame.time.set_timer(CREATE_ENEMY, 1500)
 
 # Variables
+lane_mode = int(input('1 way or 2 way mode? (1 or 2)-> '))
+
 main_display = pygame.display.set_mode((WIDTH, HEIGHT))
 
 background = Background(image='images\Road.jpg', width=WIDTH, height=HEIGHT)
@@ -41,7 +43,7 @@ def event_parser(playing):
             playing = False
 
         if event.type == CREATE_ENEMY:
-            new_enemy = Enemy(rand_enemy=random.choice(ENEMIES), lane=random.choice([1, 3, 5, 7]), lane_width=LANE_WIDTH)
+            new_enemy = Enemy(rand_enemy=random.choice(ENEMIES), lane=random.choice([1, 3, 5, 7]), lane_width=LANE_WIDTH, lane_mode=lane_mode)
             enemies.append(new_enemy)
             rand_time_to_spawn = random.randint(200, 5000)
             pygame.time.set_timer(CREATE_ENEMY, rand_time_to_spawn)
@@ -72,6 +74,9 @@ def pressed_keys_parser():
 def enemies_func(playing):
     for enemy in enemies:
         enemy_speed = background.speed - 2.0
+        if lane_mode == 2:
+            if enemy.lane in [1, 3]:
+                enemy_speed = background.speed + 2.0
         enemy.rect.move_ip(0, enemy_speed)
         main_display.blit(enemy.img, enemy.rect)
 

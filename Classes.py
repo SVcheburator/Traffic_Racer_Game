@@ -30,10 +30,12 @@ class Player:
 
 
 class Enemy:
-    def __init__(self, rand_enemy, lane, lane_width) -> None:
+    def __init__(self, rand_enemy, lane, lane_width, lane_mode) -> None:
         self.rand_enemy = rand_enemy
         self.lane = lane
         self.size = self.rand_enemy[1]
         self.img = pygame.transform.scale(pygame.image.load(self.rand_enemy[0]), self.size)
         self.rect = pygame.Rect(lane_width*self.lane, 0 - self.size[1], *self.size)
         self.rect.center = (lane_width*self.lane, 0 - self.size[1])
+        if lane in [1, 3] and lane_mode == 2:
+            self.img = pygame.transform.rotate(self.img, 180)
